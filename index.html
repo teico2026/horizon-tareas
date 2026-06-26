@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Horizon · Tareas</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --ink:#0f1729;
+    --ink-soft:#5b6473;
+    --ink-mute:#8b93a1;
+    --line:#e6e8ee;
+    --line-soft:#eef0f4;
+    --black:#111418;
+    --accent:#f97316;       /* naranja Horizon (logo) */
+    --accent-soft:#fff1e6;
+    --blue:#2563eb;
+    --blue-soft:#e8f0ff;
+    --green:#16a34a;
+    --green-soft:#e7f7ed;
+    --amber:#d97706;
+    --amber-soft:#fef3e2;
+    --gray-soft:#eef0f4;
+    --shadow:0 1px 2px rgba(16,23,41,.04), 0 4px 14px rgba(16,23,41,.05);
+    --shadow-sm:0 1px 2px rgba(16,23,41,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;
+    background:var(--bg);color:var(--ink);min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── HEADER ── */
+  header{
+    background:var(--surface);border-bottom:1px solid var(--line);
+    padding:0 28px;height:64px;display:flex;align-items:center;
+    justify-content:space-between;position:sticky;top:0;z-index:30;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .hex{
+    width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:900;font-size:15px;
+    background:linear-gradient(135deg,#fb923c,#f97316);
+    clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);
+  }
+  .brand-name{font-size:19px;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
+  .brand-sep{color:var(--line);font-weight:300;font-size:20px}
+  .brand-sub{font-size:19px;font-weight:600;letter-spacing:-.3px;color:var(--ink-soft)}
+  .header-right{display:flex;align-items:center;gap:14px}
+  .user-pill{font-size:13px;color:var(--ink-soft);font-weight:500}
+  .btn-add{
+    display:flex;align-items:center;gap:8px;background:var(--black);color:#fff;
+    border:none;border-radius:999px;padding:11px 20px;font-size:14px;font-weight:600;
+    cursor:pointer;transition:transform .12s,background .2s;
+  }
+  .btn-add:hover{background:#000;transform:translateY(-1px)}
+  .btn-add .plus{font-size:17px;line-height:1;margin-top:-1px}
+
+  /* ── CONTEXT BAND ── */
+  .band{
+    max-width:1080px;margin:0 auto;padding:34px 28px 8px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+  }
+  .band-l .eyebrow{font-size:13px;color:var(--ink-mute);font-weight:600;letter-spacing:.2px}
+  .band-l h1{font-size:40px;font-weight:800;letter-spacing:-1.2px;line-height:1.05;margin-top:2px}
+  .band-l .meta{margin-top:8px;font-size:14px;color:var(--ink-soft)}
+  .band-l .meta b{color:var(--ink);font-weight:700}
+
+  /* segmented toggle */
+  .toggle{display:inline-flex;background:var(--gray-soft);border-radius:12px;padding:4px;gap:2px}
+  .toggle button{
+    border:none;background:transparent;color:var(--ink-mute);font-size:13.5px;font-weight:600;
+    padding:9px 18px;border-radius:9px;cursor:pointer;transition:all .15s;
+  }
+  .toggle button.active{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+
+  /* ── QUICK ADD ── */
+  .wrap{max-width:1080px;margin:0 auto;padding:14px 28px 60px}
+  .quickadd{
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);padding:10px 10px 10px 18px;display:flex;align-items:center;gap:10px;
+    margin-bottom:26px;
+  }
+  .quickadd .qa-plus{color:var(--ink-mute);font-size:20px;font-weight:400;flex:0 0 auto}
+  .quickadd input.qa-title{
+    flex:1 1 auto;border:none;outline:none;font-size:16px;font-family:inherit;color:var(--ink);
+    background:transparent;padding:8px 0;
+  }
+  .quickadd input.qa-title::placeholder{color:var(--ink-mute)}
+  .qa-field{
+    border:1px solid var(--line);background:#fff;border-radius:10px;
+    font-size:13.5px;font-family:inherit;color:var(--ink-soft);padding:9px 12px;outline:none;
+    cursor:pointer;transition:border-color .15s;
+  }
+  .qa-field:focus{border-color:var(--accent)}
+  .qa-go{
+    background:var(--black);color:#fff;border:none;border-radius:10px;padding:10px 18px;
+    font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;flex:0 0 auto;
+  }
+  .qa-go:hover{background:#000}
+  .qa-hint{font-size:12px;color:var(--ink-mute);margin:-16px 4px 26px;display:flex;gap:6px;align-items:center}
+
+  /* ── TASK CARD ── */
+  .group-label{
+    font-size:12.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+    color:var(--ink-mute);margin:22px 4px 12px;display:flex;align-items:center;gap:8px;
+  }
+  .group-label .count{
+    background:var(--gray-soft);color:var(--ink-soft);border-radius:999px;
+    font-size:11px;font-weight:700;padding:2px 9px;letter-spacing:0;
+  }
+  .group-label .ava{
+    width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;color:#fff;letter-spacing:0;
+  }
+  .task{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow-sm);padding:15px 18px;display:flex;align-items:center;gap:14px;
+    margin-bottom:10px;transition:border-color .15s,transform .1s;
+  }
+  .task:hover{border-color:#d4d8e2}
+  .check{
+    width:21px;height:21px;border-radius:7px;border:2px solid #cbd2dd;flex:0 0 auto;
+    cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;
+  }
+  .check:hover{border-color:var(--green)}
+  .task.done .check{background:var(--green);border-color:var(--green)}
+  .task.done .check::after{content:"✓";color:#fff;font-size:13px;font-weight:800}
+  .task-body{flex:1 1 auto;min-width:0}
+  .task-title{font-size:15px;font-weight:600;color:var(--ink);line-height:1.3}
+  .task.done .task-title{color:var(--ink-mute);text-decoration:line-through}
+  .task-sub{display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
+  .ava{border-radius:50%}
+  .resp{
+    display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
+  }
+  .resp .ava{
+    width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;color:#fff;
+  }
+  .chip{
+    font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap;
+  }
+  .chip.date{background:var(--gray-soft);color:var(--ink-soft)}
+  .chip.date.today{background:var(--amber-soft);color:var(--amber)}
+  .chip.date.over{background:#fdeaea;color:#dc2626}
+  .estado{
+    font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:999px;white-space:nowrap;
+    margin-left:auto;flex:0 0 auto;
+  }
+  .estado.pendiente{background:var(--gray-soft);color:var(--ink-soft)}
+  .estado.curso{background:var(--blue-soft);color:var(--blue)}
+  .estado.esperando{background:var(--amber-soft);color:var(--amber)}
+  .estado.hecha{background:var(--green-soft);color:var(--green)}
+  .origen-dot{
+    font-size:10.5px;color:var(--ink-mute);font-weight:600;display:inline-flex;align-items:center;gap:4px;
+  }
+  .origen-dot::before{content:"";width:6px;height:6px;border-radius:50%;background:#cbd2dd}
+
+  .draft-flag{
+    max-width:1080px;margin:18px auto 0;padding:10px 16px;background:var(--amber-soft);
+    border:1px solid #f6d8a8;border-radius:10px;color:var(--amber);font-size:12.5px;font-weight:600;
+    display:flex;align-items:center;gap:8px;
+  }
+  .empty{color:var(--ink-mute);font-size:14px;padding:30px 4px;text-align:center}
+
+  /* ── LOGIN / GATE ── */
+  .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:60}
+  .login-card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:40px 44px;text-align:center;max-width:380px}
+  .login-card .hex{margin:0 auto 18px}
+  .login-card h2{font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--ink)}
+  .login-card p{font-size:14px;color:var(--ink-soft);margin-top:6px}
+  .login-card .msg{font-size:13px;color:#dc2626;margin-top:14px;font-weight:600}
+  .btn-google{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:#fff;border:none;border-radius:999px;padding:13px 26px;font-size:15px;font-weight:600;cursor:pointer;margin-top:24px;transition:background .2s}
+  .btn-google:hover{background:#000}
+  .btn-logout{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+  .btn-logout:hover{border-color:#cbd2dd;color:var(--ink)}
+
+  /* ── DASHBOARD ── */
+  .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:6px 0 26px}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow-sm)}
+  .kpi-label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-mute)}
+  .kpi-val{font-size:30px;font-weight:800;letter-spacing:-1px;color:var(--ink);line-height:1.1;margin-top:4px}
+  .kpi-sub{font-size:12px;color:var(--ink-mute);margin-top:3px}
+  .kpi-bar{height:6px;border-radius:99px;background:var(--gray-soft);margin-top:10px;overflow:hidden}
+  .kpi-bar span{display:block;height:100%;border-radius:99px}
+
+  .proy-list{display:flex;flex-direction:column;gap:14px}
+  .proy{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;transition:box-shadow .2s,border-color .2s}
+  .proy.hl{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft),var(--shadow)}
+  .proy-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .proy-name{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:var(--ink);flex:1 1 auto;min-width:0}
+  .proy-bar-accent{width:4px;height:18px;border-radius:4px;flex:0 0 auto}
+  .proy-team{display:flex;align-items:center}
+  .proy-team .ava{width:24px;height:24px;font-size:10px;margin-left:-6px;border:2px solid #fff}
+  .proy-team .ava:first-child{margin-left:0}
+  .proy-metrics{display:grid;grid-template-columns:1fr 1.4fr;gap:24px;margin-bottom:8px}
+  .metric-top{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-soft);margin-bottom:7px}
+  .metric-top b{color:var(--ink);font-weight:700}
+  .prog{height:9px;border-radius:99px;background:var(--gray-soft);overflow:hidden;position:relative}
+  .prog span{display:block;height:100%;border-radius:99px;transition:width .4s}
+  .prog.time span{background:#c7cdd9}
+  .prog.time .hoy{position:absolute;top:-3px;width:2px;height:15px;background:var(--ink);transform:translateX(-1px)}
+  .prog.time .hoy::after{content:"hoy";position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:var(--ink-soft)}
+
+  .proy-rows{margin-top:14px;border-top:1px solid var(--line-soft);padding-top:6px}
+  .d-row{display:grid;grid-template-columns:1fr 44px 70px 110px;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line-soft)}
+  .d-row:last-child{border-bottom:none}
+  .d-row.done .d-task{color:var(--ink-mute);text-decoration:line-through}
+  .d-task{font-size:13.5px;color:var(--ink);display:flex;align-items:center;gap:9px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .d-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  .d-dot.pendiente{background:#cbd2dd}.d-dot.curso{background:var(--blue)}.d-dot.esperando{background:var(--amber)}.d-dot.hecha{background:var(--green)}
+  .d-fecha{font-size:12.5px;color:var(--ink-soft)}
+  .d-resp .ava{width:22px;height:22px;font-size:10px}
+  @media(max-width:720px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.proy-metrics{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div class="hex">H</div>
+    <h2>Horizon · Tareas</h2>
+    <p>Tu tablero personal</p>
+    <button class="btn-google" onclick="signInWithGoogle()">Ingresar con Google</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+<header>
+  <div class="brand">
+    <div class="hex">H</div>
+    <span class="brand-name">HORIZON</span>
+    <span class="brand-sep">|</span>
+    <span class="brand-sub">Tareas</span>
+  </div>
+  <div class="header-right">
+    <span class="user-pill" id="user-badge"></span>
+    <button class="btn-logout" onclick="signOut()">Salir</button>
+    <button class="btn-add" onclick="document.querySelector('.qa-title').focus()">
+      <span class="plus">+</span> Nueva tarea
+    </button>
+  </div>
+</header>
+
+<div class="band">
+  <div class="band-l">
+    <div class="eyebrow" id="eyebrow">Jueves 25 de junio</div>
+    <h1 id="band-title">Mi día</h1>
+    <div class="meta" id="band-meta"></div>
+  </div>
+  <div class="toggle">
+    <button id="t-dia" class="active" onclick="setView('dia')">Mi día</button>
+    <button id="t-persona" onclick="setView('persona')">Por persona</button>
+    <button id="t-dash" onclick="setView('dash')">Dashboard</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <!-- QUICK ADD (PASO 2) -->
+  <div class="quickadd">
+    <span class="qa-plus">+</span>
+    <input class="qa-title" placeholder="¿Qué hay que hacer?" onkeydown="if(event.key==='Enter')addTask()" />
+    <select class="qa-field" id="qa-resp">
+      <option value="yo">Yo</option>
+      <option value="Fede">Fede</option>
+      <option value="Juampi">Juampi</option>
+      <option value="Lucas">Lucas</option>
+    </select>
+    <input class="qa-field" id="qa-date" type="date" style="color:var(--ink-soft)" />
+    <button class="qa-go" onclick="addTask()">Agregar</button>
+  </div>
+  <div class="qa-hint">↵ Enter para tirar la tarea adentro · responsable por defecto: Yo · fecha opcional</div>
+
+  <div id="content"></div>
+</div>
+</div><!-- /#app -->
+
+<script>
+// ─── SUPABASE ───  (mismo proyecto que el CRM; tabla independiente "tareas")
+const SUPABASE_URL = 'https://ikutlqwthlwnujxurohs.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_WUYlrX0OttmLjhaZIRGxUw_CY1iqrPa';
+const MI_EMAIL = 'mt@horizon-trd.com';   // único habilitado (refuerza el RLS de la tabla)
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const TODAY = new Date().toISOString().slice(0,10);
+let tareas = [];
+
+// ─── AUTH + GATE ───
+async function signInWithGoogle(){
+  await _sb.auth.signInWithOAuth({
+    provider:'google',
+    options:{ redirectTo: window.location.origin + window.location.pathname }
+  });
+}
+async function signOut(){
+  await _sb.auth.signOut();
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+}
+async function initApp(){
+  const { data:{ session } } = await _sb.auth.getSession();
+  if(!session){ return; } // queda la pantalla de login
+  if(session.user.email !== MI_EMAIL){
+    document.getElementById('login-screen').innerHTML =
+      `<div class="login-card"><div class="hex">H</div><h2>Acceso restringido</h2>
+       <p>Este tablero es personal.</p>
+       <div class="msg">${session.user.email} no tiene acceso.</div>
+       <button class="btn-google" onclick="signOut()">Cerrar sesión</button></div>`;
+    return;
+  }
+  document.getElementById('user-badge').textContent = session.user.email;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  setEyebrow();
+  await loadTareas();
+}
+function setEyebrow(){
+  const d=new Date();
+  const dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const mm=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('eyebrow').textContent=`${dias[d.getDay()]} ${d.getDate()} de ${mm[d.getMonth()]}`;
+}
+
+// ─── DATA (CRUD contra Supabase) ───
+async function loadTareas(){
+  const { data, error } = await _sb.from('tareas').select('*').order('created_at',{ascending:false});
+  if(error){ console.error('loadTareas:', error); tareas=[]; }
+  else { tareas = data || []; }
+  render();
+}
+
+const AVA = { 'yo':'#f97316','Fede':'#2563eb','Juampi':'#7c3aed','Lucas':'#0891b2' };
+const ESTADO_CLASS = {'pendiente':'pendiente','en curso':'curso','esperando respuesta':'esperando','hecha':'hecha'};
+const ESTADO_LABEL = {'pendiente':'Pendiente','en curso':'En curso','esperando respuesta':'Esperando','hecha':'Hecha'};
+let view = 'dia';
+
+function ava(name, big){
+  const label = name==='yo' ? 'MT' : name.slice(0,2).toUpperCase();
+  return `<span class="ava" style="background:${AVA[name]||'#94a3b8'};${big?'':''}">${label}</span>`;
+}
+function respLabel(name){ return name==='yo' ? 'Yo' : name; }
+
+function dateChip(d){
+  if(!d) return '';
+  let cls='date', txt=fmt(d);
+  if(d < TODAY) cls='date over';
+  else if(d === TODAY){ cls='date today'; txt='Hoy'; }
+  return `<span class="chip ${cls}">${txt}</span>`;
+}
+function fmt(d){
+  const [y,m,day]=d.split('-'); const mm=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${parseInt(day)} ${mm[parseInt(m)-1]}`;
+}
+
+function taskRow(t){
+  return `<div class="task ${t.estado==='hecha'?'done':''}" ondblclick="openDash('${(t.proyecto||'').replace(/'/g,"\\'")}')" title="Doble-click: ver en Dashboard">
+    <div class="check" onclick="toggleDone(${t.id})"></div>
+    <div class="task-body">
+      <div class="task-title">${t.titulo}</div>
+      <div class="task-sub">
+        <span class="resp">${ava(t.responsable)} ${respLabel(t.responsable)}</span>
+        ${dateChip(t.deadline)}
+        ${t.origen!=='manual'?`<span class="origen-dot">${t.origen}</span>`:''}
+        ${t.notas?`<span class="origen-dot">📝 ${t.notas}</span>`:''}
+      </div>
+    </div>
+    <span class="estado ${ESTADO_CLASS[t.estado]}">${ESTADO_LABEL[t.estado]}</span>
+  </div>`;
+}
+
+let highlightProy = null;
+function openDash(proy){ highlightProy = proy||null; setView('dash'); }
+
+function render(){
+  const c = document.getElementById('content');
+  if(view==='dash'){ renderDashboard(c); return; }
+  if(view==='dia'){
+    document.getElementById('band-title').textContent='Mi día';
+    const mine = tareas.filter(t=>t.es_mia).sort(sortByDeadline);
+    const pend = mine.filter(t=>t.estado!=='hecha').length;
+    document.getElementById('band-meta').innerHTML = `<b>${pend}</b> pendientes · ${mine.length} en total`;
+    c.innerHTML = mine.length ? mine.map(taskRow).join('') : `<div class="empty">Nada para hoy 🎉</div>`;
+  } else {
+    document.getElementById('band-title').textContent='Por persona';
+    const people = [...new Set(tareas.map(t=>t.responsable))];
+    document.getElementById('band-meta').innerHTML = `<b>${people.length}</b> personas · ${tareas.length} tareas`;
+    c.innerHTML = people.map(p=>{
+      const list = tareas.filter(t=>t.responsable===p).sort(sortByDeadline);
+      const open = list.filter(t=>t.estado!=='hecha').length;
+      return `<div class="group-label">${ava(p)} ${respLabel(p)} <span class="count">${open} abiertas</span></div>
+              ${list.map(taskRow).join('')}`;
+    }).join('');
+  }
+}
+// ─── DASHBOARD ───
+function toNum(d){ return d ? new Date(d+'T00:00:00').getTime() : null; }
+function diffDays(a,b){ return Math.round((toNum(b)-toNum(a))/86400000); }
+
+function renderDashboard(c){
+  document.getElementById('band-title').textContent='Dashboard';
+  const abiertas = tareas.filter(t=>t.estado!=='hecha').length;
+  const hechas = tareas.filter(t=>t.estado==='hecha').length;
+  const vencidas = tareas.filter(t=>t.estado!=='hecha' && t.deadline && t.deadline<TODAY).length;
+  const curso = tareas.filter(t=>t.estado==='en curso').length;
+  const avanceGlobal = tareas.length ? Math.round(hechas/tareas.length*100) : 0;
+  document.getElementById('band-meta').innerHTML = `<b>${avanceGlobal}%</b> completado · ${abiertas} abiertas`;
+
+  const kpis = `<div class="kpi-strip">
+    <div class="kpi"><div class="kpi-label">Avance global</div><div class="kpi-val">${avanceGlobal}%</div>
+      <div class="kpi-bar"><span style="width:${avanceGlobal}%;background:var(--accent)"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Abiertas</div><div class="kpi-val">${abiertas}</div><div class="kpi-sub">${tareas.length} en total</div></div>
+    <div class="kpi"><div class="kpi-label">En curso</div><div class="kpi-val" style="color:var(--blue)">${curso}</div><div class="kpi-sub">activas ahora</div></div>
+    <div class="kpi"><div class="kpi-label">Vencidas</div><div class="kpi-val" style="color:${vencidas?'#dc2626':'var(--green)'}">${vencidas}</div><div class="kpi-sub">${vencidas?'requieren acción':'al día'}</div></div>
+  </div>`;
+
+  // agrupar por proyecto
+  const proys = [...new Set(tareas.map(t=>t.proyecto||'Sin proyecto'))];
+  const groups = proys.map(p=>{
+    const list = tareas.filter(t=>(t.proyecto||'Sin proyecto')===p).sort(sortByDeadline);
+    const done = list.filter(t=>t.estado==='hecha').length;
+    const pct = Math.round(done/list.length*100);
+    const team = [...new Set(list.map(t=>t.responsable))];
+    const creados = list.map(t=>(t.created_at||'').slice(0,10)).filter(Boolean).sort();
+    const inicio = creados[0] || list.find(t=>t.deadline)?.deadline || TODAY;
+    const fechas = list.map(t=>t.deadline).filter(Boolean).sort();
+    const fin = fechas.length ? fechas[fechas.length-1] : TODAY;
+    const span = Math.max(diffDays(inicio,fin),1);
+    let hoyPct = Math.min(Math.max(diffDays(inicio,TODAY)/span*100,0),100);
+    const overdue = TODAY>fin && pct<100;
+    const estadoTxt = pct===100?'Completo':(overdue?'Atrasado':(list.some(t=>t.estado==='en curso')?'En curso':'En agenda'));
+    const estadoCls = pct===100?'hecha':(overdue?'esperando':(list.some(t=>t.estado==='en curso')?'curso':'pendiente'));
+    const barColor = pct===100?'var(--green)':(overdue?'#dc2626':'var(--accent)');
+    const hl = (highlightProy && highlightProy===p) ? 'hl' : '';
+
+    const rows = list.map(t=>`<div class="d-row ${t.estado==='hecha'?'done':''}">
+        <div class="d-cell d-task"><span class="d-dot ${ESTADO_CLASS[t.estado]}"></span>${t.titulo}</div>
+        <div class="d-cell d-resp">${ava(t.responsable)}</div>
+        <div class="d-cell d-fecha">${t.deadline?fmt(t.deadline):'—'}</div>
+        <div class="d-cell"><span class="estado ${ESTADO_CLASS[t.estado]}" style="margin:0">${ESTADO_LABEL[t.estado]}</span></div>
+      </div>`).join('');
+
+    return `<div class="proy ${hl}">
+      <div class="proy-head">
+        <div class="proy-name"><span class="proy-bar-accent" style="background:${barColor}"></span>${p}</div>
+        <div class="proy-team">${team.map(r=>ava(r)).join('')}</div>
+        <span class="estado ${estadoCls}" style="margin:0">${estadoTxt}</span>
+      </div>
+      <div class="proy-metrics">
+        <div class="metric">
+          <div class="metric-top"><span>Avance</span><b>${pct}%</b></div>
+          <div class="prog"><span style="width:${pct}%;background:${barColor}"></span></div>
+        </div>
+        <div class="metric">
+          <div class="metric-top"><span>Tiempo · ${fmt(inicio)} → ${fmt(fin)}</span><b>${list.length} tareas</b></div>
+          <div class="prog time"><span style="width:${hoyPct}%"></span><i class="hoy" style="left:${hoyPct}%" title="Hoy"></i></div>
+        </div>
+      </div>
+      <div class="proy-rows">${rows}</div>
+    </div>`;
+  }).join('');
+
+  c.innerHTML = kpis + `<div class="proy-list">${groups}</div>`;
+  if(highlightProy){ const el=c.querySelector('.proy.hl'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); highlightProy=null; }
+}
+
+function sortByDeadline(a,b){
+  if(!a.deadline) return 1; if(!b.deadline) return -1; return a.deadline<b.deadline?-1:1;
+}
+function setView(v){
+  view=v;
+  document.getElementById('t-dia').classList.toggle('active',v==='dia');
+  document.getElementById('t-persona').classList.toggle('active',v==='persona');
+  document.getElementById('t-dash').classList.toggle('active',v==='dash');
+  document.querySelector('.quickadd').style.display = v==='dash' ? 'none' : 'flex';
+  document.querySelector('.qa-hint').style.display = v==='dash' ? 'none' : 'flex';
+  render();
+}
+async function toggleDone(id){
+  const t=tareas.find(x=>x.id===id);
+  if(!t) return;
+  const nuevo = t.estado==='hecha' ? 'pendiente' : 'hecha';
+  t.estado = nuevo; render();                         // optimista
+  const { error } = await _sb.from('tareas').update({ estado:nuevo }).eq('id',id);
+  if(error){ console.error('toggleDone:', error); await loadTareas(); }
+}
+async function addTask(){
+  const inp=document.querySelector('.qa-title');
+  const titulo=inp.value.trim();
+  if(!titulo) return;
+  const resp=document.getElementById('qa-resp').value;
+  const date=document.getElementById('qa-date').value || null;
+  const go=document.querySelector('.qa-go'); go.disabled=true;
+  const fila={ titulo, responsable:resp, deadline:date, estado:'pendiente', origen:'manual', es_mia: resp==='yo', notas:null };
+  const { data, error } = await _sb.from('tareas').insert(fila).select().single();
+  go.disabled=false;
+  if(error){ console.error('addTask:', error); alert('No se pudo guardar la tarea.'); return; }
+  tareas.unshift(data);
+  inp.value=''; document.getElementById('qa-date').value='';
+  inp.focus(); render();
+}
+
+_sb.auth.onAuthStateChange((event)=>{ if(event==='SIGNED_IN') initApp(); });
+initApp();
+</script>
+</body>
+</html>
