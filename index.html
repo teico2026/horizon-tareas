@@ -715,8 +715,8 @@ async function addTask(){
   const resp=document.getElementById('qa-resp').value;
   const date=document.getElementById('qa-date').value || null;
   const go=document.querySelector('.qa-go'); go.disabled=true;
-  const fila={ titulo, responsable:resp, deadline:date, estado:'pendiente', origen:'manual', es_mia: resp==='yo', notas:null };
-  if(DEMO){ fila.id=Date.now(); fila.en_foco=false; tareas.unshift(fila); inp.value=''; document.getElementById('qa-date').value=''; go.disabled=false; inp.focus(); render(); return; }
+  const fila={ titulo, responsable:resp, deadline:date, estado:'pendiente', origen:'manual', es_mia: resp==='yo', proyecto:null, en_foco:false, notas:null };
+  if(DEMO){ fila.id=Date.now(); tareas.unshift(fila); inp.value=''; document.getElementById('qa-date').value=''; go.disabled=false; inp.focus(); render(); return; }
   const { data, error } = await _sb.from('tareas').insert(fila).select().single();
   go.disabled=false;
   if(error){ console.error('addTask:', error); alert('No se pudo guardar la tarea:\n'+(error.message||error.code||'')); return; }
