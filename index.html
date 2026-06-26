@@ -426,7 +426,7 @@ function fmt(d){
 
 function taskRow(t){
   return `<div class="task ${t.estado==='hecha'?'done':''}" ondblclick="openDash('${(t.proyecto||'').replace(/'/g,"\\'")}')" title="Doble-click: ver en Dashboard">
-    <div class="check" onclick="toggleDone(${t.id})"></div>
+    <div class="check" onclick="toggleDone('${t.id}')"></div>
     <div class="task-body">
       <div class="task-title">${t.titulo}</div>
       <div class="task-sub">
@@ -568,8 +568,8 @@ function focoBlock(){
         <div class="foco-meta">${ava(t.responsable)}<span class="foco-proj">${t.proyecto||'Sin proyecto'}</span></div>
       </div>
       <div class="foco-actions">
-        <button class="x-foco" title="Quitar del foco" onclick="quitarFoco(${t.id})">✕</button>
-        <button class="btn-done" onclick="focoDone(${t.id})">✓ Hecha</button>
+        <button class="x-foco" title="Quitar del foco" onclick="quitarFoco('${t.id}')">✕</button>
+        <button class="btn-done" onclick="focoDone('${t.id}')">✓ Hecha</button>
       </div>
     </div>`;
   }).join('');
@@ -582,7 +582,7 @@ function focoBlock(){
         <span class="sugg-title">${t.titulo}</span>
         <span class="foco-tag ${r.tagc}">${r.tag}</span>
         ${ava(t.responsable)}
-        <button class="btn-sumar" onclick="sumarFoco(${t.id})">+ Sumar</button>
+        <button class="btn-sumar" onclick="sumarFoco('${t.id}')">+ Sumar</button>
       </div>`; }).join('');
     sugg = `<div class="foco-sugg">
       <div class="foco-sugg-head">💡 Te queda${slots>1?'n':''} ${slots} lugar${slots>1?'es':''} — elegí cuáles sumás a tu foco</div>
@@ -606,7 +606,7 @@ function focoBlock(){
 }
 function setFocoCap(n){ focoCap=n; localStorage.setItem('foco_cap',n); render(); }
 async function setFoco(id,val){
-  const t=tareas.find(x=>x.id===id); if(!t) return;
+  const t=tareas.find(x=>String(x.id)===String(id)); if(!t) return;
   t.en_foco=val; render();
   if(DEMO) return;
   const { error } = await _sb.from('tareas').update({ en_foco:val }).eq('id',id);
@@ -616,7 +616,7 @@ function sumarFoco(id){ setFoco(id,true); }
 function quitarFoco(id){ setFoco(id,false); }
 async function focoDone(id){
   const el=document.getElementById('fc'+id); if(el) el.classList.add('gone');
-  const t=tareas.find(x=>x.id===id); if(!t) return;
+  const t=tareas.find(x=>String(x.id)===String(id)); if(!t) return;
   t.estado='hecha';
   setTimeout(render,260);
   if(DEMO) return;
@@ -637,7 +637,7 @@ function setView(v){
   render();
 }
 async function toggleDone(id){
-  const t=tareas.find(x=>x.id===id);
+  const t=tareas.find(x=>String(x.id)===String(id));
   if(!t) return;
   const nuevo = t.estado==='hecha' ? 'pendiente' : 'hecha';
   t.estado = nuevo; render();                         // optimista
