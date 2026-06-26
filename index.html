@@ -169,6 +169,8 @@
     display:flex;align-items:center;gap:8px;
   }
   .empty{color:var(--ink-mute);font-size:14px;padding:30px 4px;text-align:center}
+  .group-label.done-label{color:var(--ink-mute);margin-top:30px;border-top:1px solid var(--line);padding-top:20px}
+  .group-label.done-label .archive-hint{font-size:11px;font-weight:600;color:var(--ink-mute);letter-spacing:0;text-transform:none;margin-left:2px}
 
   /* ── LOGIN / GATE ── */
   .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:60}
@@ -300,6 +302,7 @@
     <button id="t-dia" class="active" onclick="setView('dia')">Mi día</button>
     <button id="t-persona" onclick="setView('persona')">Por persona</button>
     <button id="t-dash" onclick="setView('dash')">Dashboard</button>
+    <button id="t-archivo" onclick="setView('archivo')">Archivo</button>
   </div>
 </div>
 
@@ -387,8 +390,10 @@ function seedDemo(){
     {id:6,titulo:'Cerrar saldo pendiente de facturación Pogliotti',responsable:'yo',deadline:null,estado:'en curso',origen:'mail',proyecto:'Pogliotti',es_mia:true,en_foco:false},
     {id:7,titulo:'Revisar perfil de Maximiliano Malagueño (Lanly)',responsable:'yo',deadline:null,estado:'pendiente',origen:'mail',proyecto:'Reclutamiento',es_mia:true,en_foco:false},
     {id:8,titulo:'Seguimiento cotización RedFibra Misiones',responsable:'Juampi',deadline:'2026-06-25',estado:'pendiente',origen:'crm',proyecto:'RedFibra',es_mia:false,en_foco:false},
-    {id:9,titulo:'Cargar lista de precios Huawei GPON',responsable:'yo',deadline:'2026-06-20',estado:'hecha',origen:'manual',proyecto:'Data',es_mia:true,en_foco:false},
+    {id:9,titulo:'Cargar lista de precios Huawei GPON',responsable:'yo',deadline:'2026-06-20',estado:'hecha',origen:'manual',proyecto:'Data',es_mia:true,en_foco:false,completed_at:'2026-06-20T15:00:00Z'},
     {id:10,titulo:'Preparar demo coherente para metro edge',responsable:'Lucas',deadline:'2026-07-02',estado:'pendiente',origen:'manual',proyecto:'Coherent',es_mia:false,en_foco:false},
+    {id:11,titulo:'Enviar remito firmado a Supercanal',responsable:'yo',deadline:'2026-06-24',estado:'hecha',origen:'mail',proyecto:'Supercanal',es_mia:true,en_foco:false,completed_at:'2026-06-26T09:00:00Z'},
+    {id:12,titulo:'Coordinar visita técnica en Oberá',responsable:'Fede',deadline:'2026-06-23',estado:'hecha',origen:'manual',proyecto:'CoopTel',es_mia:false,en_foco:false,completed_at:'2026-06-24T12:00:00Z'},
   ];
 }
 
@@ -443,27 +448,70 @@ function taskRow(t){
 let highlightProy = null;
 function openDash(proy){ highlightProy = proy||null; setView('dash'); }
 
+// completadas: quedan visibles ARCHIVE_DIAS días y después se archivan (se ocultan)
+const ARCHIVE_DIAS = 5;
+function isArchived(t){
+  if(t.estado!=='hecha') return false;
+  if(!t.completed_at) return true;                                  // completada vieja sin fecha → archivada
+  return (Date.now() - new Date(t.completed_at).getTime())/86400000 >= ARCHIVE_DIAS;
+}
+function completadaHace(t){
+  if(!t.completed_at) return '';
+  const d = Math.floor((Date.now() - new Date(t.completed_at).getTime())/86400000);
+  return d<=0 ? 'hoy' : `hace ${d} día${d>1?'s':''}`;
+}
+function completedSection(done){
+  if(!done.length) return '';
+  const sorted = [...done].sort((a,b)=>String(b.completed_at||'').localeCompare(String(a.completed_at||'')));
+  return `<div class="group-label done-label">✓ Completadas <span class="count">${done.length}</span><span class="archive-hint">se archivan a los ${ARCHIVE_DIAS} días</span></div>
+          ${sorted.map(taskRow).join('')}`;
+}
 function render(){
   const c = document.getElementById('content');
   if(view==='dash'){ renderDashboard(c); return; }
+  if(view==='archivo'){ renderArchivo(c); return; }
+  const vivas = tareas.filter(t=>!isArchived(t));
   if(view==='dia'){
     document.getElementById('band-title').textContent='Mi día';
-    const mine = tareas.filter(t=>t.es_mia).sort(sortByDeadline);
-    const pend = mine.filter(t=>t.estado!=='hecha').length;
-    document.getElementById('band-meta').innerHTML = `<b>${pend}</b> pendientes · ${mine.length} en total`;
-    c.innerHTML = mine.length ? mine.map(taskRow).join('') : `<div class="empty">Nada para hoy 🎉</div>`;
+    const mine = vivas.filter(t=>t.es_mia);
+    const open = mine.filter(t=>t.estado!=='hecha').sort(sortByDeadline);
+    const done = mine.filter(t=>t.estado==='hecha');
+    document.getElementById('band-meta').innerHTML = `<b>${open.length}</b> pendientes · ${done.length} completada${done.length===1?'':'s'} a la vista`;
+    c.innerHTML = (open.length||done.length)
+      ? open.map(taskRow).join('') + completedSection(done)
+      : `<div class="empty">Nada para hoy 🎉</div>`;
   } else {
     document.getElementById('band-title').textContent='Por persona';
-    const people = [...new Set(tareas.map(t=>t.responsable))];
-    document.getElementById('band-meta').innerHTML = `<b>${people.length}</b> personas · ${tareas.length} tareas`;
-    c.innerHTML = people.map(p=>{
-      const list = tareas.filter(t=>t.responsable===p).sort(sortByDeadline);
-      const open = list.filter(t=>t.estado!=='hecha').length;
-      return `<div class="group-label">${ava(p)} ${respLabel(p)} <span class="count">${open} abiertas</span></div>
+    const people = [...new Set(vivas.map(t=>t.responsable))];
+    const totalOpen = vivas.filter(t=>t.estado!=='hecha').length;
+    document.getElementById('band-meta').innerHTML = `<b>${people.length}</b> personas · ${totalOpen} abiertas`;
+    const openBlocks = people.map(p=>{
+      const list = vivas.filter(t=>t.responsable===p && t.estado!=='hecha').sort(sortByDeadline);
+      if(!list.length) return '';
+      return `<div class="group-label">${ava(p)} ${respLabel(p)} <span class="count">${list.length} abiertas</span></div>
               ${list.map(taskRow).join('')}`;
     }).join('');
+    const done = vivas.filter(t=>t.estado==='hecha');
+    c.innerHTML = (openBlocks||done.length) ? openBlocks + completedSection(done) : `<div class="empty">Sin tareas 🎉</div>`;
   }
 }
+// ─── ARCHIVO ───  (completadas con +5 días; siguen guardadas, solo se mueven acá)
+function renderArchivo(c){
+  document.getElementById('band-title').textContent='Archivo';
+  const arch = tareas.filter(isArchived)
+    .sort((a,b)=>String(b.completed_at||'').localeCompare(String(a.completed_at||'')));
+  document.getElementById('band-meta').innerHTML =
+    `<b>${arch.length}</b> tarea${arch.length===1?'':'s'} archivada${arch.length===1?'':'s'} · se mueven acá tras ${ARCHIVE_DIAS} días`;
+  if(!arch.length){ c.innerHTML = `<div class="empty">Todavía no hay tareas archivadas 📦</div>`; return; }
+  const mesDe = d => { try{ return new Date(d).toLocaleDateString('es-AR',{month:'long',year:'numeric'}); }catch(e){ return 'Sin fecha'; } };
+  const groups = {};
+  arch.forEach(t=>{ const k = t.completed_at?mesDe(t.completed_at):'Sin fecha'; (groups[k]=groups[k]||[]).push(t); });
+  c.innerHTML = Object.entries(groups).map(([mes,list])=>
+    `<div class="group-label done-label">📦 ${mes.charAt(0).toUpperCase()+mes.slice(1)} <span class="count">${list.length}</span></div>
+     ${list.map(taskRow).join('')}`
+  ).join('');
+}
+
 // ─── DASHBOARD ───
 function toNum(d){ return d ? new Date(d+'T00:00:00').getTime() : null; }
 function diffDays(a,b){ return Math.round((toNum(b)-toNum(a))/86400000); }
@@ -617,10 +665,10 @@ function quitarFoco(id){ setFoco(id,false); }
 async function focoDone(id){
   const el=document.getElementById('fc'+id); if(el) el.classList.add('gone');
   const t=tareas.find(x=>String(x.id)===String(id)); if(!t) return;
-  t.estado='hecha';
+  t.estado='hecha'; t.completed_at=new Date().toISOString();
   setTimeout(render,260);
   if(DEMO) return;
-  const { error } = await _sb.from('tareas').update({ estado:'hecha' }).eq('id',id);
+  const { error } = await _sb.from('tareas').update({ estado:'hecha', completed_at:t.completed_at }).eq('id',id);
   if(error){ console.error('focoDone:', error); await loadTareas(); }
 }
 
@@ -632,17 +680,21 @@ function setView(v){
   document.getElementById('t-dia').classList.toggle('active',v==='dia');
   document.getElementById('t-persona').classList.toggle('active',v==='persona');
   document.getElementById('t-dash').classList.toggle('active',v==='dash');
-  document.querySelector('.quickadd').style.display = v==='dash' ? 'none' : 'flex';
-  document.querySelector('.qa-hint').style.display = v==='dash' ? 'none' : 'flex';
+  document.getElementById('t-archivo').classList.toggle('active',v==='archivo');
+  const noAdd = (v==='dash'||v==='archivo');
+  document.querySelector('.quickadd').style.display = noAdd ? 'none' : 'flex';
+  document.querySelector('.qa-hint').style.display = noAdd ? 'none' : 'flex';
   render();
 }
 async function toggleDone(id){
   const t=tareas.find(x=>String(x.id)===String(id));
   if(!t) return;
   const nuevo = t.estado==='hecha' ? 'pendiente' : 'hecha';
-  t.estado = nuevo; render();                         // optimista
+  t.estado = nuevo;
+  t.completed_at = nuevo==='hecha' ? new Date().toISOString() : null;
+  render();                                           // optimista
   if(DEMO) return;
-  const { error } = await _sb.from('tareas').update({ estado:nuevo }).eq('id',id);
+  const { error } = await _sb.from('tareas').update({ estado:nuevo, completed_at:t.completed_at }).eq('id',id);
   if(error){ console.error('toggleDone:', error); await loadTareas(); }
 }
 async function addTask(){
