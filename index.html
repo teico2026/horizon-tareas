@@ -23,6 +23,8 @@
     --green-soft:#e7f7ed;
     --amber:#d97706;
     --amber-soft:#fef3e2;
+    --red:#dc2626;
+    --red-soft:#fdeaea;
     --gray-soft:#eef0f4;
     --shadow:0 1px 2px rgba(16,23,41,.04), 0 4px 14px rgba(16,23,41,.05);
     --shadow-sm:0 1px 2px rgba(16,23,41,.06);
@@ -216,6 +218,47 @@
   .d-dot.pendiente{background:#cbd2dd}.d-dot.curso{background:var(--blue)}.d-dot.esperando{background:var(--amber)}.d-dot.hecha{background:var(--green)}
   .d-fecha{font-size:12.5px;color:var(--ink-soft)}
   .d-resp .ava{width:22px;height:22px;font-size:10px}
+  /* ── FOCO DE HOY ── */
+  .foco{margin:0 0 30px}
+  .foco-head{display:flex;align-items:center;gap:12px;margin:2px 4px 16px}
+  .foco-eyebrow{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-soft)}
+  .foco-eyebrow .ico{font-size:15px}
+  .foco-pill{background:var(--black);color:#fff;font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:999px}
+  .foco-cap{margin-left:auto;display:inline-flex;background:var(--gray-soft);border-radius:10px;padding:3px;gap:2px}
+  .foco-cap button{border:none;background:transparent;color:var(--ink-mute);font-size:12.5px;font-weight:700;padding:6px 14px;border-radius:8px;cursor:pointer;transition:all .15s}
+  .foco-cap button.active{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+  .foco-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:17px 20px;display:flex;align-items:flex-start;gap:15px;margin-bottom:11px;transition:border-color .15s,opacity .25s,transform .12s}
+  .foco-card:hover{border-color:#d4d8e2}
+  .foco-card.gone{opacity:0;transform:translateX(14px)}
+  .foco-dot{width:13px;height:13px;border-radius:50%;flex:0 0 auto;margin-top:5px}
+  .foco-dot.red{background:var(--red)}.foco-dot.amber{background:var(--amber)}.foco-dot.blue{background:var(--blue)}.foco-dot.gray{background:var(--ink-mute)}
+  .foco-body{flex:1 1 auto;min-width:0}
+  .foco-title-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .foco-title{font-size:16.5px;font-weight:800;letter-spacing:-.3px;color:var(--ink)}
+  .foco-tag{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .foco-tag.red{background:var(--red-soft);color:var(--red)}.foco-tag.amber{background:var(--amber-soft);color:var(--amber)}.foco-tag.blue{background:var(--blue-soft);color:var(--blue)}.foco-tag.gray{background:var(--gray-soft);color:var(--ink-soft)}
+  .foco-carry{font-size:10px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.3px;display:inline-flex;align-items:center;gap:3px}
+  .foco-carry::before{content:"⤵"}
+  .foco-why{font-size:14px;color:var(--ink-soft);line-height:1.5;margin-top:6px}
+  .foco-why b{color:var(--ink);font-weight:700}
+  .foco-meta{display:flex;align-items:center;gap:8px;margin-top:9px}
+  .foco-meta .ava{width:21px;height:21px;font-size:10px}
+  .foco-proj{font-size:12px;font-weight:600;color:var(--ink-mute)}
+  .foco-actions{flex:0 0 auto;align-self:center;display:flex;align-items:center;gap:6px}
+  .btn-done{display:flex;align-items:center;gap:7px;background:var(--black);color:#fff;border:none;border-radius:999px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;white-space:nowrap}
+  .btn-done:hover{background:#000;transform:translateY(-1px)}
+  .x-foco{background:transparent;border:none;color:var(--ink-mute);font-size:15px;cursor:pointer;padding:5px 7px;border-radius:8px;line-height:1;transition:all .15s}
+  .x-foco:hover{background:var(--gray-soft);color:var(--ink)}
+  .foco-sugg{background:var(--surface);border:1px dashed #cdd3df;border-radius:14px;padding:13px 18px;margin-top:2px}
+  .foco-sugg-head{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--ink-mute);margin-bottom:8px}
+  .sugg-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-top:1px solid var(--line-soft)}
+  .sugg-row:first-of-type{border-top:none}
+  .sugg-title{flex:1 1 auto;font-size:13.5px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sugg-row .ava{width:20px;height:20px;font-size:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+  .btn-sumar{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .15s;white-space:nowrap}
+  .btn-sumar:hover{border-color:var(--accent);color:var(--accent)}
+  .foco-empty{background:var(--surface);border:1px dashed var(--line);border-radius:16px;padding:30px;text-align:center;color:var(--ink-mute);font-size:14px}
+
   @media(max-width:720px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.proy-metrics{grid-template-columns:1fr}}
 </style>
 </head>
@@ -288,7 +331,9 @@ const MI_EMAIL = 'mt@horizon-trd.com';   // único habilitado (refuerza el RLS d
 const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const TODAY = new Date().toISOString().slice(0,10);
+const DEMO = location.search.indexOf('demo') >= 0;   // ?demo → datos de ejemplo, sin login
 let tareas = [];
+let focoCap = parseInt(localStorage.getItem('foco_cap')||'3',10);
 
 // ─── AUTH + GATE ───
 async function signInWithGoogle(){
@@ -303,6 +348,13 @@ async function signOut(){
   document.getElementById('login-screen').style.display='flex';
 }
 async function initApp(){
+  if(DEMO){
+    seedDemo();
+    document.getElementById('user-badge').textContent='demo@horizon-trd.com';
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    setEyebrow(); setView('dash'); return;
+  }
   const { data:{ session } } = await _sb.auth.getSession();
   if(!session){ return; } // queda la pantalla de login
   if(session.user.email !== MI_EMAIL){
@@ -325,9 +377,24 @@ function setEyebrow(){
   const mm=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   document.getElementById('eyebrow').textContent=`${dias[d.getDay()]} ${d.getDate()} de ${mm[d.getMonth()]}`;
 }
+function seedDemo(){
+  tareas = [
+    {id:1,titulo:'Enviar presupuesto revisado a SWISSNET',responsable:'yo',deadline:'2026-06-23',estado:'pendiente',origen:'manual',proyecto:'Swissnet',es_mia:true,en_foco:true},
+    {id:2,titulo:'Confirmar recepción y procesar OC 4500115647',responsable:'yo',deadline:'2026-06-26',estado:'pendiente',origen:'mail',proyecto:'Supercanal',es_mia:true,en_foco:true},
+    {id:3,titulo:'Entregas Pogliotti — coordinar logística 14 km',responsable:'Fede',deadline:'2026-06-22',estado:'en curso',origen:'manual',proyecto:'Pogliotti',es_mia:false,en_foco:false},
+    {id:4,titulo:'AN6000-7 Fiberhome: confirmar recepción de remito',responsable:'yo',deadline:'2026-06-24',estado:'esperando respuesta',origen:'mail',proyecto:'Fiberhome',es_mia:true,en_foco:false},
+    {id:5,titulo:'Reunión Mati & Fran (Francisco Santolo)',responsable:'yo',deadline:'2026-06-26',estado:'pendiente',origen:'mail',proyecto:'',es_mia:true,en_foco:false},
+    {id:6,titulo:'Cerrar saldo pendiente de facturación Pogliotti',responsable:'yo',deadline:null,estado:'en curso',origen:'mail',proyecto:'Pogliotti',es_mia:true,en_foco:false},
+    {id:7,titulo:'Revisar perfil de Maximiliano Malagueño (Lanly)',responsable:'yo',deadline:null,estado:'pendiente',origen:'mail',proyecto:'Reclutamiento',es_mia:true,en_foco:false},
+    {id:8,titulo:'Seguimiento cotización RedFibra Misiones',responsable:'Juampi',deadline:'2026-06-25',estado:'pendiente',origen:'crm',proyecto:'RedFibra',es_mia:false,en_foco:false},
+    {id:9,titulo:'Cargar lista de precios Huawei GPON',responsable:'yo',deadline:'2026-06-20',estado:'hecha',origen:'manual',proyecto:'Data',es_mia:true,en_foco:false},
+    {id:10,titulo:'Preparar demo coherente para metro edge',responsable:'Lucas',deadline:'2026-07-02',estado:'pendiente',origen:'manual',proyecto:'Coherent',es_mia:false,en_foco:false},
+  ];
+}
 
 // ─── DATA (CRUD contra Supabase) ───
 async function loadTareas(){
+  if(DEMO){ render(); return; }
   const { data, error } = await _sb.from('tareas').select('*').order('created_at',{ascending:false});
   if(error){ console.error('loadTareas:', error); tareas=[]; }
   else { tareas = data || []; }
@@ -464,8 +531,97 @@ function renderDashboard(c){
     </div>`;
   }).join('');
 
-  c.innerHTML = kpis + `<div class="proy-list">${groups}</div>`;
+  c.innerHTML = focoBlock() + kpis + `<div class="proy-list">${groups}</div>`;
   if(highlightProy){ const el=c.querySelector('.proy.hl'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); highlightProy=null; }
+}
+
+// ─── FOCO DE HOY (las impostergables que vos elegís) ───
+function focoScore(t){
+  if(t.deadline && t.deadline < TODAY) return 1000 + diffDays(t.deadline,TODAY); // vencida: más atrasada, más arriba
+  if(t.deadline === TODAY) return 500;                                            // vence hoy
+  if(t.estado==='en curso') return 300;
+  if(t.estado==='esperando respuesta') return 200;
+  return 100;
+}
+function focoReason(t){
+  if(t.deadline && t.deadline < TODAY){ const d=diffDays(t.deadline,TODAY);
+    return {dot:'red',tag:'Vencida',tagc:'red',why:`Venció hace <b>${d} día${d>1?'s':''}</b>. Arrastrala y cerrala hoy.`}; }
+  if(t.deadline===TODAY) return {dot:'amber',tag:'Vence hoy',tagc:'amber',why:`Tiene fecha <b>hoy</b>. Si no sale hoy, mañana ya arrastra.`};
+  if(t.estado==='en curso') return {dot:'blue',tag:'En curso',tagc:'blue',why:`Ya está arrancada y <b>sin fecha de cierre</b>. Definí el próximo paso.`};
+  if(t.estado==='esperando respuesta') return {dot:'amber',tag:'Esperando',tagc:'amber',why:`<b>Esperando respuesta</b>. Un recordatorio breve la reactiva.`};
+  return {dot:'gray',tag:'Pendiente',tagc:'gray',why:`Sin fecha asignada. Ponele un día para que no flote.`};
+}
+function focoBlock(){
+  const open = tareas.filter(t=>t.estado!=='hecha');
+  const inFoco = open.filter(t=>t.en_foco).sort((a,b)=>focoScore(b)-focoScore(a)).slice(0,focoCap);
+  const slots = focoCap - inFoco.length;
+  const sugeridas = slots>0 ? open.filter(t=>!t.en_foco).sort((a,b)=>focoScore(b)-focoScore(a)).slice(0, slots+2) : [];
+
+  const cards = inFoco.map(t=>{
+    const r=focoReason(t);
+    const carry = (t.deadline && t.deadline<TODAY) ? `<span class="foco-carry">arrastrada</span>` : '';
+    return `<div class="foco-card" id="fc${t.id}">
+      <div class="foco-dot ${r.dot}"></div>
+      <div class="foco-body">
+        <div class="foco-title-row"><span class="foco-title">${t.titulo}</span><span class="foco-tag ${r.tagc}">${r.tag}</span>${carry}</div>
+        <div class="foco-why">${r.why}</div>
+        <div class="foco-meta">${ava(t.responsable)}<span class="foco-proj">${t.proyecto||'Sin proyecto'}</span></div>
+      </div>
+      <div class="foco-actions">
+        <button class="x-foco" title="Quitar del foco" onclick="quitarFoco(${t.id})">✕</button>
+        <button class="btn-done" onclick="focoDone(${t.id})">✓ Hecha</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  let sugg='';
+  if(slots>0 && sugeridas.length){
+    const rows = sugeridas.map(t=>{ const r=focoReason(t);
+      return `<div class="sugg-row">
+        <span class="foco-dot ${r.dot}" style="width:9px;height:9px;margin:0"></span>
+        <span class="sugg-title">${t.titulo}</span>
+        <span class="foco-tag ${r.tagc}">${r.tag}</span>
+        ${ava(t.responsable)}
+        <button class="btn-sumar" onclick="sumarFoco(${t.id})">+ Sumar</button>
+      </div>`; }).join('');
+    sugg = `<div class="foco-sugg">
+      <div class="foco-sugg-head">💡 Te queda${slots>1?'n':''} ${slots} lugar${slots>1?'es':''} — elegí cuáles sumás a tu foco</div>
+      ${rows}</div>`;
+  }
+  const body = (inFoco.length||sugeridas.length)
+    ? cards+sugg
+    : `<div class="foco-empty">No tenés tareas abiertas. Estás al día 🎉</div>`;
+
+  return `<div class="foco">
+    <div class="foco-head">
+      <span class="foco-eyebrow"><span class="ico">🎯</span> Foco de hoy</span>
+      <span class="foco-pill">${inFoco.length}/${focoCap} elegidas</span>
+      <div class="foco-cap">
+        <button class="${focoCap===3?'active':''}" onclick="setFocoCap(3)">3</button>
+        <button class="${focoCap===5?'active':''}" onclick="setFocoCap(5)">5</button>
+      </div>
+    </div>
+    ${body}
+  </div>`;
+}
+function setFocoCap(n){ focoCap=n; localStorage.setItem('foco_cap',n); render(); }
+async function setFoco(id,val){
+  const t=tareas.find(x=>x.id===id); if(!t) return;
+  t.en_foco=val; render();
+  if(DEMO) return;
+  const { error } = await _sb.from('tareas').update({ en_foco:val }).eq('id',id);
+  if(error){ console.error('setFoco:', error); await loadTareas(); }
+}
+function sumarFoco(id){ setFoco(id,true); }
+function quitarFoco(id){ setFoco(id,false); }
+async function focoDone(id){
+  const el=document.getElementById('fc'+id); if(el) el.classList.add('gone');
+  const t=tareas.find(x=>x.id===id); if(!t) return;
+  t.estado='hecha';
+  setTimeout(render,260);
+  if(DEMO) return;
+  const { error } = await _sb.from('tareas').update({ estado:'hecha' }).eq('id',id);
+  if(error){ console.error('focoDone:', error); await loadTareas(); }
 }
 
 function sortByDeadline(a,b){
@@ -485,6 +641,7 @@ async function toggleDone(id){
   if(!t) return;
   const nuevo = t.estado==='hecha' ? 'pendiente' : 'hecha';
   t.estado = nuevo; render();                         // optimista
+  if(DEMO) return;
   const { error } = await _sb.from('tareas').update({ estado:nuevo }).eq('id',id);
   if(error){ console.error('toggleDone:', error); await loadTareas(); }
 }
@@ -496,6 +653,7 @@ async function addTask(){
   const date=document.getElementById('qa-date').value || null;
   const go=document.querySelector('.qa-go'); go.disabled=true;
   const fila={ titulo, responsable:resp, deadline:date, estado:'pendiente', origen:'manual', es_mia: resp==='yo', notas:null };
+  if(DEMO){ fila.id=Date.now(); fila.en_foco=false; tareas.unshift(fila); inp.value=''; document.getElementById('qa-date').value=''; go.disabled=false; inp.focus(); render(); return; }
   const { data, error } = await _sb.from('tareas').insert(fila).select().single();
   go.disabled=false;
   if(error){ console.error('addTask:', error); alert('No se pudo guardar la tarea.'); return; }
