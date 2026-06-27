@@ -82,6 +82,17 @@
 
   /* ── QUICK ADD ── */
   .wrap{max-width:1080px;margin:0 auto;padding:14px 28px 60px}
+  .searchbar{
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow-sm);padding:8px 12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;
+    transition:border-color .15s;
+  }
+  .searchbar:focus-within{border-color:var(--accent)}
+  .searchbar .s-ico{font-size:15px;opacity:.6;flex:0 0 auto}
+  .searchbar .s-input{flex:1 1 auto;border:none;outline:none;font-size:14.5px;font-family:inherit;color:var(--ink);background:transparent;padding:4px 0}
+  .searchbar .s-input::placeholder{color:var(--ink-mute)}
+  .searchbar .s-clear{border:none;background:var(--gray-soft);color:var(--ink-soft);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px;flex:0 0 auto;line-height:1}
+  .searchbar .s-clear:hover{background:#e1e4ea}
   .quickadd{
     background:var(--surface);border:1px solid var(--line);border-radius:16px;
     box-shadow:var(--shadow);padding:10px 10px 10px 18px;display:flex;align-items:center;gap:10px;
@@ -312,6 +323,13 @@
 </div>
 
 <div class="wrap">
+  <!-- BUSCADOR GENERAL -->
+  <div class="searchbar">
+    <span class="s-ico">🔍</span>
+    <input class="s-input" id="search" placeholder="Buscar en todas las tareas (título, persona, proyecto…)" oninput="onSearch(this.value)" />
+    <button class="s-clear" id="s-clear" onclick="clearSearch()" style="display:none">✕</button>
+  </div>
+
   <!-- QUICK ADD (PASO 2) -->
   <div class="quickadd">
     <span class="qa-plus">+</span>
@@ -415,6 +433,28 @@ const AVA = { 'yo':'#f97316','Fede':'#2563eb','Juampi':'#7c3aed','Lucas':'#0891b
 const ESTADO_CLASS = {'pendiente':'pendiente','en curso':'curso','esperando respuesta':'esperando','hecha':'hecha'};
 const ESTADO_LABEL = {'pendiente':'Pendiente','en curso':'En curso','esperando respuesta':'Esperando','hecha':'Hecha'};
 let view = 'dia';
+let searchQuery = '';
+
+// ─── BUSCADOR GENERAL ───
+function onSearch(v){
+  searchQuery = (v||'').trim().toLowerCase();
+  document.getElementById('s-clear').style.display = searchQuery ? 'flex' : 'none';
+  render();
+}
+function clearSearch(){ const i=document.getElementById('search'); if(i) i.value=''; onSearch(''); }
+function matchSearch(t){
+  const hay = [t.titulo, respLabel(t.responsable), t.proyecto, t.notas, ESTADO_LABEL[t.estado]]
+    .filter(Boolean).join(' ').toLowerCase();
+  return hay.includes(searchQuery);
+}
+function renderSearch(c){
+  document.getElementById('band-title').textContent='Búsqueda';
+  const res = tareas.filter(matchSearch).sort(sortByDeadline);
+  const arch = res.filter(isArchived).length;
+  document.getElementById('band-meta').innerHTML =
+    `<b>${res.length}</b> resultado${res.length===1?'':'s'} para "${searchQuery}"${arch?` · ${arch} en archivo`:''}`;
+  c.innerHTML = res.length ? res.map(taskRow).join('') : `<div class="empty">Sin resultados para "${searchQuery}" 🔍</div>`;
+}
 
 function ava(name, big){
   const label = name==='yo' ? 'MT' : name.slice(0,2).toUpperCase();
@@ -473,6 +513,7 @@ function completedSection(done){
 }
 function render(){
   const c = document.getElementById('content');
+  if(searchQuery){ renderSearch(c); return; }
   if(view==='dash'){ renderDashboard(c); return; }
   if(view==='archivo'){ renderArchivo(c); return; }
   const vivas = tareas.filter(t=>!isArchived(t));
