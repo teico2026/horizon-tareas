@@ -258,11 +258,13 @@
   .d-dot.pendiente{background:var(--border-strong)}.d-dot.curso{background:var(--blue)}.d-dot.esperando{background:var(--gold)}.d-dot.hecha{background:var(--accent)}
   .d-fecha{font-size:13px;color:var(--text-secondary)}
   .d-resp .ava{width:22px;height:22px;font-size:10px}
-  /* ── FOCO DE HOY ── */
-  .foco{margin:0 0 30px}
-  .foco-head{display:flex;align-items:center;gap:12px;margin:2px 4px 16px}
-  .foco-eyebrow{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--text-secondary)}
+  /* ── FOCO DE HOY (fijado arriba de Mi día) ── */
+  .foco{margin:0 0 26px;background:var(--surface-1);border:0.5px solid var(--border-strong);border-radius:16px;padding:18px 18px 14px;position:relative;overflow:hidden}
+  .foco::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+  .foco-head{display:flex;align-items:center;gap:12px;margin:0 4px 16px}
+  .foco-eyebrow{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--text-primary)}
   .foco-eyebrow .ico{font-size:15px}
+  .foco-fixed{font-size:11px;font-weight:400;color:var(--text-muted);border:0.5px solid var(--border);border-radius:6px;padding:3px 8px;display:inline-flex;align-items:center;gap:4px}
   .foco-pill{background:var(--accent);color:#fff;font-size:12px;font-weight:400;padding:4px 12px;border-radius:6px}
   .foco-cap{margin-left:auto;display:inline-flex;background:var(--surface-1);border:0.5px solid var(--border);border-radius:8px;padding:3px;gap:2px}
   .foco-cap button{border:none;background:transparent;color:var(--text-muted);font-size:13px;font-weight:400;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .15s;font-family:inherit}
@@ -571,9 +573,10 @@ function render(){
     const open = mine.filter(t=>t.estado!=='hecha').sort(sortByDeadline);
     const done = mine.filter(t=>t.estado==='hecha');
     document.getElementById('band-meta').innerHTML = `<b>${open.length}</b> pendientes · ${done.length} completada${done.length===1?'':'s'} a la vista`;
-    c.innerHTML = (open.length||done.length)
+    const resto = (open.length||done.length)
       ? open.map(taskRow).join('') + completedSection(done)
       : `<div class="empty">Nada para hoy 🎉</div>`;
+    c.innerHTML = focoBlock() + resto;
   } else {
     document.getElementById('band-title').textContent='Por persona';
     const people = [...new Set(vivas.map(t=>t.responsable))];
@@ -694,7 +697,7 @@ function renderDashboard(c){
       <span class="sec-title">Tablero de tareas</span>
       <span class="sec-note"><span class="live">en vivo</span></span>
     </div>`;
-  c.innerHTML = crmBlock() + focoBlock() + tareasHead + kpis + `<div class="proy-list">${groups}</div>`;
+  c.innerHTML = crmBlock() + tareasHead + kpis + `<div class="proy-list">${groups}</div>`;
   if(highlightProy){ const el=c.querySelector('.proy.hl'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); highlightProy=null; }
 }
 
@@ -758,6 +761,7 @@ function focoBlock(){
   return `<div class="foco">
     <div class="foco-head">
       <span class="foco-eyebrow"><span class="ico">🎯</span> Foco de hoy</span>
+      <span class="foco-fixed">📌 fijado arriba</span>
       <span class="foco-pill">${inFoco.length}/${focoCap} elegidas</span>
       <div class="foco-cap">
         <button class="${focoCap===3?'active':''}" onclick="setFocoCap(3)">3</button>
