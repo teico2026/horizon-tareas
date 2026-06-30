@@ -6,32 +6,34 @@
 <title>Horizon · Tareas</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
   :root{
-    --page-bg:#d8d5ca; --grid:rgba(255,255,255,0.55);
-    --surface-1:#f3f1ea; --surface-2:#ffffff;
-    --border:rgba(0,0,0,0.09); --border-strong:rgba(0,0,0,0.15);
-    --text-primary:#2c2c2a; --text-secondary:#5f5e5a; --text-muted:#8a8980;
-    --accent:#46a178; --accent-hover:#2f7d5a; --accent-soft:rgba(70,161,120,0.12);
-    --accent-2:#6dbf99; --mint:#e9f4ee;
-    --gold:#e0a52e; --gold-deep:#b07d17; --gold-soft:rgba(224,165,46,0.14);
-    --blue:#5b7fa6; --blue-soft:rgba(91,127,166,0.14);
-    --green:#46a178; --green-soft:rgba(70,161,120,0.12);
+    --page-bg:#f5f8fb; --grid:rgba(10,58,107,0.03);
+    --surface-1:#eef3f8; --surface-2:#ffffff;
+    --border:#dbe3ec; --border-strong:#c4ccd6;
+    --text-primary:#16202b; --text-secondary:#3f4d5a; --text-muted:#5c6b7a;
+    --accent:#1f8a5b; --accent-hover:#176f49; --accent-soft:rgba(31,138,91,0.12);
+    --accent-2:#1f8a5b; --mint:#e9f6ef;
+    --gold:#c79a3a; --gold-deep:#9c7726; --gold-soft:#faf3e0;
+    --blue:#0096d6; --blue-soft:#e8f4fb;
+    --green:#1f8a5b; --green-soft:#e9f6ef;
     --brown:#b3814a; --slate:#9aa3a0;
-    --danger:#cf5b5b; --danger-soft:rgba(207,91,91,0.12);
+    --danger:#c0392b; --danger-soft:#fcecea;
+    --fh:#0096d6; --fh-deep:#0a3a6b; --fh-soft:#e8f4fb;
   }
   [data-theme="dark"]{
-    --page-bg:#15150f; --grid:rgba(255,255,255,0.05);
-    --surface-1:#222220; --surface-2:#2b2b27;
-    --border:rgba(255,255,255,0.10); --border-strong:rgba(255,255,255,0.18);
-    --text-primary:#f1efe8; --text-secondary:#b4b2a9; --text-muted:#8a8980;
-    --accent:#5cb98c; --accent-hover:#7fcfa6; --accent-soft:rgba(92,185,140,0.16);
-    --accent-2:#5cb98c; --mint:rgba(92,185,140,0.10);
-    --gold:#e6b347; --gold-deep:#e6b347; --gold-soft:rgba(230,179,71,0.16);
-    --blue:#7c9cc0; --blue-soft:rgba(124,156,192,0.18);
-    --green:#5cb98c; --green-soft:rgba(92,185,140,0.16);
-    --danger:#df7373; --danger-soft:rgba(223,115,115,0.16);
+    --page-bg:#0f1722; --grid:rgba(255,255,255,0.04);
+    --surface-1:#16202b; --surface-2:#1b2735;
+    --border:rgba(255,255,255,0.10); --border-strong:rgba(255,255,255,0.20);
+    --text-primary:#eef3f8; --text-secondary:#b4c0cc; --text-muted:#8a98a6;
+    --accent:#2faf74; --accent-hover:#46c389; --accent-soft:rgba(47,175,116,0.18);
+    --accent-2:#2faf74; --mint:rgba(47,175,116,0.12);
+    --gold:#d9b25a; --gold-deep:#e3c277; --gold-soft:rgba(217,178,90,0.16);
+    --blue:#3aa9e0; --blue-soft:rgba(58,169,224,0.18);
+    --green:#2faf74; --green-soft:rgba(47,175,116,0.16);
+    --danger:#df7373; --danger-soft:rgba(223,115,115,0.18);
+    --fh:#3aa9e0; --fh-deep:#0a3a6b; --fh-soft:rgba(58,169,224,0.14);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
@@ -302,6 +304,61 @@
   .foco-empty{background:var(--surface-2);border:0.5px dashed var(--border);border-radius:12px;padding:30px;text-align:center;color:var(--text-muted);font-size:14px}
 
   @media(max-width:720px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.kpi:nth-child(2){border-right:none}.proy-metrics{grid-template-columns:1fr}}
+
+  /* ════════ SKIN INFORME (FiberHome × Horizon) ════════ */
+  /* Header con degradé azul + borde dorado inferior */
+  header{
+    background:linear-gradient(125deg,var(--fh-deep),var(--fh) 70%);
+    border-bottom:4px solid var(--gold);
+    height:auto;padding:14px 24px 0;display:block;
+  }
+  .htop{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  header .hex{background:rgba(255,255,255,0.16);color:#fff}
+  header .brand-name{color:#fff}
+  header .brand-sep{color:rgba(255,255,255,0.5)}
+  header .brand-sub{color:rgba(255,255,255,0.72)}
+  header .user-pill{color:rgba(255,255,255,0.82)}
+  header .btn-theme,header .btn-logout{
+    background:rgba(255,255,255,0.12);border:0.5px solid rgba(255,255,255,0.28);color:#fff;
+  }
+  header .btn-theme:hover,header .btn-logout:hover{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.45);color:#fff}
+  header .btn-add{background:var(--gold);color:#1c1402;font-weight:700}
+  header .btn-add:hover{background:var(--gold-deep);color:#fff}
+  /* Título dentro del header */
+  .htitle{max-width:1120px;margin:18px auto 0;padding:0 0 2px}
+  .htitle .eyebrow{font-size:13px;color:rgba(255,255,255,0.78);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+  .htitle h1{font-size:26px;font-weight:800;line-height:1.15;margin-top:5px;color:#fff;letter-spacing:-.01em}
+  .htitle .meta{margin-top:7px;font-size:14px;color:rgba(255,255,255,0.8)}
+  .htitle .meta b{color:#fff;font-weight:700}
+  /* Tabs estilo informe (subrayado dorado) */
+  header .toggle{
+    max-width:1120px;margin:14px auto 0;display:flex;gap:4px;background:transparent;border:none;
+    border-radius:0;padding:0;
+  }
+  header .toggle button{
+    color:rgba(255,255,255,0.75);font-weight:600;font-size:13.5px;padding:10px 16px;border-radius:0;
+    border:none;border-bottom:3px solid transparent;background:transparent;
+  }
+  header .toggle button:hover{color:#fff}
+  header .toggle button.active{
+    background:transparent;color:#fff;border:none;border-bottom:3px solid var(--gold);
+  }
+  /* Banda de búsqueda: dar aire bajo el header */
+  .wrap{padding-top:20px}
+  /* KPIs más bold (estética stat informe) */
+  .kpi-val{font-size:28px;font-weight:800;color:var(--fh-deep);font-variant-numeric:tabular-nums}
+  [data-theme="dark"] .kpi-val{color:var(--text-primary)}
+  /* Tarjetas de tarea con barra de color a la izquierda */
+  .task{position:relative;overflow:hidden}
+  .task::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue)}
+  .task.done::before{background:var(--green)}
+  .task .task-title{font-weight:600}
+  /* Foco: panel destacado con barra de acento */
+  .foco{background:linear-gradient(180deg,var(--blue-soft),var(--surface-2));border:0.5px solid var(--border-strong);position:relative}
+  .foco::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent)}
+  .foco-title{font-weight:700}
+  /* Títulos de sección de proyecto / grupos más bold */
+  .kpi-label,.proy-name{font-weight:600}
 </style>
 </head>
 <body>
@@ -317,24 +374,23 @@
 
 <div id="app" style="display:none">
 <header>
-  <div class="brand">
-    <div class="hex">H</div>
-    <span class="brand-name">Horizon</span>
-    <span class="brand-sep">·</span>
-    <span class="brand-sub">tareas</span>
+  <div class="htop">
+    <div class="brand">
+      <div class="hex">H</div>
+      <span class="brand-name">Horizon</span>
+      <span class="brand-sep">·</span>
+      <span class="brand-sub">tareas</span>
+    </div>
+    <div class="header-right">
+      <span class="user-pill" id="user-badge"></span>
+      <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()">◐ Oscuro</button>
+      <button class="btn-logout" onclick="signOut()">Salir</button>
+      <button class="btn-add" onclick="document.querySelector('.qa-title').focus()">
+        <span class="plus">+</span> Nueva tarea
+      </button>
+    </div>
   </div>
-  <div class="header-right">
-    <span class="user-pill" id="user-badge"></span>
-    <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()">◐ Oscuro</button>
-    <button class="btn-logout" onclick="signOut()">Salir</button>
-    <button class="btn-add" onclick="document.querySelector('.qa-title').focus()">
-      <span class="plus">+</span> Nueva tarea
-    </button>
-  </div>
-</header>
-
-<div class="band">
-  <div class="band-l">
+  <div class="htitle">
     <div class="eyebrow" id="eyebrow">Jueves 25 de junio</div>
     <h1 id="band-title">Mi día</h1>
     <div class="meta" id="band-meta"></div>
@@ -345,7 +401,7 @@
     <button id="t-dash" onclick="setView('dash')">Dashboard</button>
     <button id="t-archivo" onclick="setView('archivo')">Archivo</button>
   </div>
-</div>
+</header>
 
 <div class="wrap">
   <!-- BUSCADOR GENERAL -->
@@ -429,7 +485,7 @@ async function initApp(){
     document.getElementById('user-badge').textContent='demo@horizon-trd.com';
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
-    setEyebrow(); setView('dash'); return;
+    setEyebrow(); setView('dia'); return;
   }
   const { data:{ session } } = await _sb.auth.getSession();
   if(!session){ return; } // queda la pantalla de login
