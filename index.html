@@ -359,6 +359,73 @@
   .foco-title{font-weight:700}
   /* Títulos de sección de proyecto / grupos más bold */
   .kpi-label,.proy-name{font-weight:600}
+
+  /* ── Chip de fuente + badges en la tarjeta ── */
+  .task{cursor:pointer}
+  .src-chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--text-muted);background:var(--surface-1);border:0.5px solid var(--border);border-radius:6px;padding:2px 8px;white-space:nowrap;text-decoration:none}
+  a.src-chip.linkable{color:var(--fh);border-color:var(--blue-soft);background:var(--blue-soft)}
+  a.src-chip.linkable:hover{border-color:var(--fh);filter:brightness(0.98)}
+  .task-badge{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;color:var(--text-muted);background:var(--surface-1);border:0.5px solid var(--border);border-radius:6px;padding:2px 7px}
+
+  /* ── Drawer de detalle ── */
+  .detail-overlay{position:fixed;inset:0;background:rgba(10,32,53,0.42);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .22s;z-index:40}
+  .detail-overlay.open{opacity:1;visibility:visible}
+  .detail-panel{position:fixed;top:0;right:0;height:100vh;width:min(520px,94vw);background:var(--surface-2);border-left:0.5px solid var(--border);
+    box-shadow:-18px 0 48px rgba(10,32,53,0.18);transform:translateX(100%);transition:transform .26s cubic-bezier(.4,0,.2,1);z-index:41;display:flex;flex-direction:column;overflow:hidden}
+  .detail-panel.open{transform:translateX(0)}
+  .dp-head{background:linear-gradient(125deg,var(--fh-deep),var(--fh) 75%);border-bottom:4px solid var(--gold);padding:20px 22px 18px;color:#fff;position:relative;flex:0 0 auto}
+  .dp-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;border:0.5px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.12);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+  .dp-close:hover{background:rgba(255,255,255,0.22)}
+  .dp-eyebrow{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,0.8);margin-bottom:8px}
+  .dp-title{font-size:20px;font-weight:800;line-height:1.25;color:#fff;padding-right:34px}
+  .dp-estado-row{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .dp-estado-row .estado{font-size:12px}
+  .dp-estado-sel{font-family:inherit;font-size:12.5px;font-weight:500;border:0.5px solid rgba(255,255,255,0.32);background:rgba(255,255,255,0.14);color:#fff;border-radius:7px;padding:5px 9px;cursor:pointer}
+  .dp-estado-sel option{color:#16202b}
+  .dp-body{flex:1 1 auto;overflow-y:auto;padding:22px}
+  .dp-sec{margin-bottom:24px}
+  .dp-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--fh-deep);margin-bottom:10px}
+  [data-theme="dark"] .dp-label{color:var(--blue)}
+  .dp-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .dp-meta{background:var(--surface-1);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px}
+  .dp-meta .k{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:4px}
+  .dp-meta .v{font-size:14px;color:var(--text-primary);font-weight:500;display:flex;align-items:center;gap:6px}
+  .dp-desc{width:100%;min-height:96px;resize:vertical;font-family:inherit;font-size:14px;line-height:1.55;color:var(--text-primary);background:var(--surface-1);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px}
+  .dp-desc:focus{outline:none;border-color:var(--fh)}
+  .dp-desc::placeholder{color:var(--text-muted)}
+  /* Links */
+  .dp-link{display:flex;align-items:center;gap:10px;background:var(--surface-1);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;text-decoration:none}
+  .dp-link:hover{border-color:var(--fh)}
+  .dp-link .li{font-size:16px;flex:0 0 auto}
+  .dp-link .lt{flex:1 1 auto;min-width:0;font-size:13.5px;color:var(--fh);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dp-link .lx{flex:0 0 auto;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:14px;padding:2px 4px}
+  .dp-link .lx:hover{color:var(--danger)}
+  .dp-add-row{display:flex;gap:8px;margin-top:4px}
+  .dp-add-row input{flex:1 1 auto;font-family:inherit;font-size:13px;border:0.5px solid var(--border);border-radius:9px;padding:9px 11px;background:var(--surface-2);color:var(--text-primary)}
+  .dp-add-row input:focus{outline:none;border-color:var(--fh)}
+  .dp-add-btn{flex:0 0 auto;border:none;background:var(--fh);color:#fff;font-weight:600;font-size:13px;border-radius:9px;padding:9px 14px;cursor:pointer;font-family:inherit}
+  .dp-add-btn:hover{background:var(--fh-deep)}
+  /* Adjuntos */
+  .dp-att{display:flex;align-items:center;gap:11px;background:var(--surface-1);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+  .dp-att .ai{width:34px;height:34px;border-radius:8px;background:var(--blue-soft);color:var(--fh);display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto}
+  .dp-att .an{flex:1 1 auto;min-width:0}
+  .dp-att .an .nm{font-size:13.5px;color:var(--text-primary);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dp-att .an .sz{font-size:11.5px;color:var(--text-muted)}
+  .dp-att .lx{border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:14px}
+  .dp-att .lx:hover{color:var(--danger)}
+  .dp-soon{font-size:12.5px;color:var(--text-muted);background:var(--surface-1);border:1px dashed var(--border-strong);border-radius:10px;padding:12px 14px;text-align:center}
+  .dp-empty{font-size:13px;color:var(--text-muted);font-style:italic;padding:2px 0 8px}
+  /* Footer acciones */
+  .dp-foot{flex:0 0 auto;border-top:0.5px solid var(--border);padding:14px 22px;display:flex;gap:10px;align-items:center;background:var(--surface-2)}
+  .dp-btn{font-family:inherit;font-size:13px;font-weight:600;border-radius:9px;padding:10px 16px;cursor:pointer;border:0.5px solid var(--border);background:var(--surface-1);color:var(--text-primary)}
+  .dp-btn:hover{border-color:var(--border-strong)}
+  .dp-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .dp-btn.primary:hover{background:var(--accent-hover)}
+  .dp-btn.cal{display:inline-flex;align-items:center;gap:6px;text-decoration:none;background:var(--blue-soft);border-color:var(--blue-soft);color:var(--fh)}
+  .dp-btn.cal:hover{border-color:var(--fh)}
+  .dp-btn.cal.disabled{background:var(--surface-1);border-color:var(--border);color:var(--text-muted);cursor:default}
+  .dp-btn.ghost{margin-left:auto;background:transparent;border-color:transparent;color:var(--text-muted)}
+  .dp-btn.ghost:hover{color:var(--fh)}
 </style>
 </head>
 <body>
@@ -428,6 +495,10 @@
 
   <div id="content"></div>
 </div>
+
+<!-- ═══ PANEL DE DETALLE (drawer) ═══ -->
+<div id="detail-overlay" class="detail-overlay" onclick="closeDetail()"></div>
+<aside id="detail-panel" class="detail-panel" aria-hidden="true"></aside>
 </div><!-- /#app -->
 
 <script>
@@ -580,16 +651,41 @@ function fmt(d){
   return `${parseInt(day)} ${mm[parseInt(m)-1]}`;
 }
 
+// ─── FUENTE (origen) ───
+const ORIGEN = {
+  manual:  {ico:'✍️', label:'Manual'},
+  mail:    {ico:'✉️', label:'Mail'},
+  crm:     {ico:'📊', label:'CRM'},
+  calendar:{ico:'📅', label:'Calendar'},
+  whatsapp:{ico:'💬', label:'WhatsApp'},
+};
+function origenInfo(o){ return ORIGEN[o] || ORIGEN.manual; }
+function sourceChip(t){
+  const o = origenInfo(t.origen);
+  if(t.origen_url){
+    return `<a class="src-chip linkable" href="${t.origen_url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Abrir fuente: ${o.label}">${o.ico} ${o.label} ↗</a>`;
+  }
+  return `<span class="src-chip" title="Fuente: ${o.label}">${o.ico} ${o.label}</span>`;
+}
+function metaBadges(t){
+  const n = (t.links?.length||0), a = (t.adjuntos?.length||0);
+  let out = '';
+  if(t.descripcion) out += `<span class="task-badge" title="Tiene descripción">📝</span>`;
+  if(n) out += `<span class="task-badge" title="${n} link${n>1?'s':''}">🔗 ${n}</span>`;
+  if(a) out += `<span class="task-badge" title="${a} adjunto${a>1?'s':''}">📎 ${a}</span>`;
+  if(t.notas) out += `<span class="task-badge" title="${esc(t.notas)}">📝</span>`;
+  return out;
+}
 function taskRow(t){
-  return `<div class="task ${t.estado==='hecha'?'done':''}" data-id="${t.id}" ondblclick="openDash('${(t.proyecto||'').replace(/'/g,"\\'")}')" title="Doble-click: ver en Dashboard">
-    <div class="check" onclick="toggleDone('${t.id}')"></div>
+  return `<div class="task ${t.estado==='hecha'?'done':''}" data-id="${t.id}" onclick="openDetail('${t.id}')" title="Ver detalle">
+    <div class="check" onclick="event.stopPropagation();toggleDone('${t.id}')"></div>
     <div class="task-body">
       <div class="task-title">${t.titulo}</div>
       <div class="task-sub">
         <span class="resp">${ava(t.responsable)} ${respLabel(t.responsable)}</span>
         ${dateChip(t.deadline)}
-        ${t.origen!=='manual'?`<span class="origen-dot">${t.origen}</span>`:''}
-        ${t.notas?`<span class="origen-dot">📝 ${t.notas}</span>`:''}
+        ${sourceChip(t)}
+        ${metaBadges(t)}
       </div>
     </div>
     <span class="estado ${ESTADO_CLASS[t.estado]}">${ESTADO_LABEL[t.estado]}</span>
@@ -598,6 +694,158 @@ function taskRow(t){
 
 let highlightProy = null;
 function openDash(proy){ highlightProy = proy||null; setView('dash'); }
+
+// ═══════ PANEL DE DETALLE ═══════
+let detailId = null;
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function findTarea(id){ return tareas.find(t=>String(t.id)===String(id)); }
+async function saveTarea(id, patch){          // persistencia optimista contra Supabase
+  const t=findTarea(id); if(!t) return;
+  Object.assign(t, patch);
+  if(DEMO) return;
+  const { error } = await _sb.from('tareas').update(patch).eq('id',id);
+  if(error){ console.error('saveTarea:', error); await loadTareas(); }
+}
+
+function openDetail(id){
+  const t = findTarea(id); if(!t) return;
+  detailId = id;
+  const p = document.getElementById('detail-panel');
+  p.innerHTML = detailHTML(t);
+  p.classList.add('open'); p.setAttribute('aria-hidden','false');
+  document.getElementById('detail-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDetail(){
+  detailId = null;
+  const p = document.getElementById('detail-panel');
+  p.classList.remove('open'); p.setAttribute('aria-hidden','true');
+  document.getElementById('detail-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && detailId) closeDetail(); });
+
+// Link "Agregar a Google Calendar" (opción simple, sin backend/OAuth)
+function gcalLink(t){
+  if(!t.deadline) return null;
+  const d = t.deadline.replace(/-/g,'');
+  const nx = new Date(t.deadline+'T00:00:00'); nx.setDate(nx.getDate()+1);
+  const end = nx.toISOString().slice(0,10).replace(/-/g,'');
+  const text = encodeURIComponent(t.titulo);
+  const det = encodeURIComponent(
+    (t.descripcion?t.descripcion+'\n\n':'') +
+    (t.proyecto?('Proyecto: '+t.proyecto+'\n'):'') +
+    'Responsable: '+respLabel(t.responsable) +
+    '\n\n— desde Horizon · Tareas');
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${d}/${end}&details=${det}`;
+}
+
+function detailHTML(t){
+  const o = origenInfo(t.origen);
+  const gcal = gcalLink(t);
+  const fuente = t.origen_url
+    ? `<a href="${t.origen_url}" target="_blank" rel="noopener" style="color:var(--fh);text-decoration:none;font-weight:500">${o.ico} ${o.label} ↗</a>`
+    : `${o.ico} ${o.label}`;
+  const estados = ['pendiente','en curso','esperando respuesta','hecha'];
+  const links = (t.links||[]);
+  const att = (t.adjuntos||[]);
+  return `
+    <div class="dp-head">
+      <button class="dp-close" onclick="closeDetail()">✕</button>
+      <div class="dp-eyebrow">${o.ico} ${esc(t.proyecto) || 'Sin proyecto'}</div>
+      <div class="dp-title">${esc(t.titulo)}</div>
+      <div class="dp-estado-row">
+        <select class="dp-estado-sel" onchange="setEstadoDetail('${t.id}',this.value)">
+          ${estados.map(e=>`<option value="${e}" ${t.estado===e?'selected':''}>${ESTADO_LABEL[e]}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="dp-body">
+      <div class="dp-sec">
+        <div class="dp-meta-grid">
+          <div class="dp-meta"><div class="k">Responsable</div><div class="v">${ava(t.responsable)} ${respLabel(t.responsable)}</div></div>
+          <div class="dp-meta"><div class="k">Vencimiento</div><div class="v">${t.deadline?fmtLargo(t.deadline):'— sin fecha'}</div></div>
+          <div class="dp-meta"><div class="k">Proyecto</div><div class="v">${esc(t.proyecto)||'—'}</div></div>
+          <div class="dp-meta"><div class="k">Fuente</div><div class="v">${fuente}</div></div>
+        </div>
+      </div>
+
+      <div class="dp-sec">
+        <div class="dp-label">📝 Descripción</div>
+        <textarea class="dp-desc" placeholder="Agregá una descripción, contexto o próximos pasos…" oninput="onDescInput('${t.id}',this.value)">${esc(t.descripcion)}</textarea>
+      </div>
+
+      <div class="dp-sec">
+        <div class="dp-label">🔗 Links</div>
+        <div id="dp-links">${links.length?links.map((l,i)=>linkHTML(l,i)).join(''):'<div class="dp-empty">Sin links todavía.</div>'}</div>
+        <div class="dp-add-row">
+          <input id="dp-link-label" placeholder="Nombre (ej: Cotización)" />
+          <input id="dp-link-url" placeholder="https://…" onkeydown="if(event.key==='Enter')addLink('${t.id}')" />
+          <button class="dp-add-btn" onclick="addLink('${t.id}')">Sumar</button>
+        </div>
+      </div>
+
+      <div class="dp-sec">
+        <div class="dp-label">📎 Adjuntos</div>
+        <div id="dp-att">${att.length?att.map((a,i)=>attHTML(a,i)).join(''):''}</div>
+        <div class="dp-soon">📎 Subida de archivos: próximamente</div>
+      </div>
+    </div>
+    <div class="dp-foot">
+      <button class="dp-btn primary" onclick="toggleDone('${t.id}');closeDetail()">${t.estado==='hecha'?'↩ Reabrir':'✓ Marcar hecha'}</button>
+      ${gcal?`<a class="dp-btn cal" href="${gcal}" target="_blank" rel="noopener" title="Crea el evento en tu Google Calendar">📅 Agregar a Calendar</a>`:`<span class="dp-btn cal disabled" title="Agregá una fecha de vencimiento para sincronizar">📅 Sin fecha</span>`}
+      <button class="dp-btn ghost" onclick="closeDetail()">Cerrar</button>
+    </div>`;
+}
+function linkHTML(l,i){
+  return `<a class="dp-link" href="${l.url}" target="_blank" rel="noopener">
+    <span class="li">🔗</span><span class="lt">${esc(l.label||l.url)}</span>
+    <button class="lx" onclick="event.preventDefault();event.stopPropagation();removeLink(${i})" title="Quitar">✕</button>
+  </a>`;
+}
+const ATT_ICO = {pdf:'📄',img:'🖼️',doc:'📃',xls:'📊',default:'📎'};
+function attHTML(a,i){
+  const ico = ATT_ICO[a.tipo]||ATT_ICO.default;
+  return `<div class="dp-att">
+    <div class="ai">${ico}</div>
+    <div class="an"><div class="nm">${esc(a.nombre)}</div><div class="sz">${esc(a.size||'')}</div></div>
+  </div>`;
+}
+function refreshLinks(){
+  const t = findTarea(detailId); if(!t) return;
+  const lk = document.getElementById('dp-links');
+  if(lk) lk.innerHTML = (t.links||[]).length ? t.links.map((l,i)=>linkHTML(l,i)).join('') : '<div class="dp-empty">Sin links todavía.</div>';
+}
+let _descTimer=null;
+function onDescInput(id,val){
+  const t=findTarea(id); if(t) t.descripcion=val;   // memoria inmediata (para badges/gcal)
+  clearTimeout(_descTimer);
+  _descTimer=setTimeout(()=>{ saveTarea(id,{descripcion:val}); render(); }, 600);
+}
+function setEstadoDetail(id,val){
+  const t=findTarea(id); if(!t) return;
+  const patch={estado:val};
+  if(val==='hecha' && !t.completed_at) patch.completed_at=new Date().toISOString();
+  if(val!=='hecha') patch.completed_at=null;
+  saveTarea(id,patch); render();
+}
+function addLink(id){
+  const t=findTarea(id); if(!t) return;
+  const url=(document.getElementById('dp-link-url').value||'').trim();
+  if(!url) return;
+  let label=(document.getElementById('dp-link-label').value||'').trim();
+  const u = /^https?:\/\//.test(url)?url:('https://'+url);
+  if(!label) label=u.replace(/^https?:\/\//,'').split('/')[0];
+  const links=[...(t.links||[]),{label,url:u}];
+  document.getElementById('dp-link-label').value='';
+  document.getElementById('dp-link-url').value='';
+  saveTarea(id,{links}); refreshLinks(); render();
+}
+function removeLink(i){
+  const t=findTarea(detailId); if(!t) return;
+  const links=(t.links||[]).filter((_,k)=>k!==i);
+  saveTarea(detailId,{links}); refreshLinks(); render();
+}
 
 // completadas: quedan visibles ARCHIVE_DIAS días y después se archivan (se ocultan)
 const ARCHIVE_DIAS = 5;
